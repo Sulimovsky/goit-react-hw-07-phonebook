@@ -1,0 +1,33 @@
+.form,
+.input,
+.btn {
+  border: 2px solid gray;
+  border-radius: 6px;
+}
+
+.form {
+  padding: 25px;
+  width: 350px;
+}
+
+.field {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.input {
+  padding: 5px;
+}
+
+.btn {
+  padding: 10px 20px;
+  color: white;
+  background-color: teal;
+  cursor: pointer;
+}

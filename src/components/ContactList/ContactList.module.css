@@ -1,0 +1,13 @@
+.list {
+  padding-left: 20px;
+}
+
+.text {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn {
+  cursor: pointer;
+}
