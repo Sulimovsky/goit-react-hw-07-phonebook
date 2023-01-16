@@ -36,7 +36,7 @@ const App = () => {
   );
 
   return (
-    <div style={{ padding: '0 10px' }}>
+    <div style={{ padding: '0 20px' }}>
       <h2>Phonebook</h2>
       <ContactForm onAddContact={onAddContact} />
       <h2>Contacts</h2>
