@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
 
-const Filter = ({ filter, onFilterContact }) => {
+const Filter = ({ onFilterContact }) => {
   return (
     <div>
       <p>Find contacts by name</p>
       <input
         type="text"
         name="filter"
-        value={filter}
         onChange={e => onFilterContact(e.target.value)}
       />
     </div>
@@ -15,7 +14,7 @@ const Filter = ({ filter, onFilterContact }) => {
 };
 
 Filter.propTypes = {
-  filter: PropTypes.string.isRequired,
+  // filter: PropTypes.string.isRequired,
   onFilterContact: PropTypes.func.isRequired,
 };
 

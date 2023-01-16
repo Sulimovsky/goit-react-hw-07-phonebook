@@ -1,24 +1,25 @@
-import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import ContactForm from 'components/ContactForm/ContactForm';
 import ContactList from 'components/ContactList/ContactList';
 import Filter from 'components/Filter/Filter';
-import useLocalStorage from 'components/hooks/useLocalStorage';
-
-const LS_KEY = 'contacts';
+import { addContact, deleteContact } from 'redux/contactsSlice';
+import { filter } from 'redux/filterSlice';
+import { getContacts, getFilterValue } from 'redux/selectors';
 
 const App = () => {
-  const [contacts, setContacts] = useLocalStorage(LS_KEY, []);
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(getContacts);
+  const filterValue = useSelector(getFilterValue);
+  const dispatch = useDispatch();
 
-  const deleteContact = contactId => {
-    setContacts(pS => pS.filter(({ id }) => id !== contactId));
+  const onDeleteContact = contactId => {
+    dispatch(deleteContact(contactId));
   };
 
   const filterContact = value => {
-    setFilter(value);
+    dispatch(filter(value));
   };
 
-  const addContact = contact => {
+  const onAddContact = contact => {
     const find = contacts.some(
       ({ name }) => name.toLowerCase() === contact.name.toLowerCase()
     );
@@ -27,22 +28,22 @@ const App = () => {
       return;
     }
 
-    setContacts(pS => [...pS, contact]);
+    dispatch(addContact(contact));
   };
 
   const filteredContacts = contacts.filter(({ name }) =>
-    name.toLowerCase().includes(filter.toLowerCase())
+    name.toLowerCase().includes(filterValue.toLowerCase())
   );
 
   return (
     <div style={{ padding: '0 10px' }}>
       <h2>Phonebook</h2>
-      <ContactForm onAddContact={addContact} />
+      <ContactForm onAddContact={onAddContact} />
       <h2>Contacts</h2>
-      <Filter filter={filter} onFilterContact={filterContact} />
+      <Filter onFilterContact={filterContact} />
       <ContactList
         contacts={filteredContacts}
-        onDeleteContact={deleteContact}
+        onDeleteContact={onDeleteContact}
       />
     </div>
   );
