@@ -1,29 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { fetchContacts, addContact, deleteContact } from './operations';
+import {
+  getActions,
+  handlePending,
+  handleFulfilled,
+  handleRejected,
+  fetchContactsFulfilledReducer,
+  addContactFulfilledReducer,
+  deleteContactFulfilledReducer,
+} from './contactsHelpersReducers';
+
+const initialState = {
+  items: [],
+  isLoading: false,
+  error: null,
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: { contacts: [] },
-  reducers: {
-    addContact(state, action) {
-      state.contacts.push(action.payload);
-    },
-    deleteContact(state, action) {
-      const index = state.contacts.findIndex(({ id }) => id === action.payload);
-      state.contacts.splice(index, 1);
-    },
-  },
+  initialState: initialState,
+  extraReducers: builder =>
+    builder
+      .addCase(fetchContacts.fulfilled, fetchContactsFulfilledReducer)
+      .addCase(addContact.fulfilled, addContactFulfilledReducer)
+      .addCase(deleteContact.fulfilled, deleteContactFulfilledReducer)
+      .addMatcher(isAnyOf(...getActions('pending')), handlePending)
+      .addMatcher(isAnyOf(...getActions('fulfilled')), handleFulfilled)
+      .addMatcher(isAnyOf(...getActions('rejected')), handleRejected),
 });
 
-const persistConfig = {
-  key: 'root',
-  storage,
-};
-
-export const persistedReducerContacts = persistReducer(
-  persistConfig,
-  contactsSlice.reducer
-);
-
-export const { addContact, deleteContact } = contactsSlice.actions;
+export const contactsReducer = contactsSlice.reducer;

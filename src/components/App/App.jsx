@@ -1,23 +1,28 @@
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ContactForm from 'components/ContactForm/ContactForm';
 import ContactList from 'components/ContactList/ContactList';
 import Filter from 'components/Filter/Filter';
-import { addContact, deleteContact } from 'redux/contactsSlice';
+import { BeatLoader } from 'react-spinners';
+import { fetchContacts, addContact } from 'redux/operations';
 import { filter } from 'redux/filterSlice';
-import { getContacts, getFilterValue } from 'redux/selectors';
+import {
+  selectContacts,
+  selectIsLoading,
+  selectError,
+  selectFilterValue,
+} from 'redux/selectors';
 
 const App = () => {
-  const contacts = useSelector(getContacts);
-  const filterValue = useSelector(getFilterValue);
   const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
+  const filterValue = useSelector(selectFilterValue);
 
-  const onDeleteContact = contactId => {
-    dispatch(deleteContact(contactId));
-  };
-
-  const filterContact = value => {
-    dispatch(filter(value));
-  };
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   const onAddContact = contact => {
     const find = contacts.some(
@@ -31,6 +36,10 @@ const App = () => {
     dispatch(addContact(contact));
   };
 
+  const filterContact = value => {
+    dispatch(filter(value));
+  };
+
   const filteredContacts = contacts.filter(({ name }) =>
     name.toLowerCase().includes(filterValue.toLowerCase())
   );
@@ -41,10 +50,19 @@ const App = () => {
       <ContactForm onAddContact={onAddContact} />
       <h2>Contacts</h2>
       <Filter onFilterContact={filterContact} />
-      <ContactList
-        contacts={filteredContacts}
-        onDeleteContact={onDeleteContact}
-      />
+      {isLoading && (
+        <BeatLoader
+          size="12px"
+          color="#008080"
+          cssOverride={{
+            padding: '20px',
+          }}
+        />
+      )}
+      {contacts.length > 0 && (
+        <ContactList contacts={filteredContacts} isDeleting={isLoading} />
+      )}
+      {error && <p>Something went wrong... {error}</p>}
     </div>
   );
 };
