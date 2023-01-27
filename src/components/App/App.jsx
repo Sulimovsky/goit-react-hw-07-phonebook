@@ -13,7 +13,6 @@ import {
   selectFilterValue,
 } from 'redux/selectors';
 
-//app
 const App = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
